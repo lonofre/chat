@@ -13,14 +13,14 @@ class UserService(user_pb2_grpc.UserServicer):
         username = request.name
         if username in users:
             logging.info(f"User %s already exists")
-            return user_pb2.CreateReply(sucess=False)
+            return user_pb2.CreateReply(success=False)
         if len(username) > 15:
             logging.info(f"User {username} has more than 15 characters. Not creating it")
-            return user_pb2.CreateReply(sucess=False)
+            return user_pb2.CreateReply(success=False)
 
         logging.info(f"Creating new user {request.name}")
         users.add(request.name)
-        return user_pb2.CreateReply(sucess=True)
+        return user_pb2.CreateReply(success=True)
 
     def Find(self, request, unused_context):
         logging.info(f"Finding user {request.name}")
