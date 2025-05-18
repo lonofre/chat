@@ -15,30 +15,36 @@ var app = builder.Build();
 AppContext.SetSwitch(
     "System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
 
-var channel = GrpcChannel.ForAddress("http://localhost:50051");
-var client = new User.UserClient(channel);
+var userChannel = GrpcChannel.ForAddress("http://localhost:50051");
+var userClient = new User.UserClient(userChannel);
+var messagingChannel = GrpcChannel.ForAddress("http://localhost:50052");
+var messagingClient = new Messaging.MessagingClient(messagingChannel);
 
-var userApi = app.MapGroup("/");
-userApi.MapGet("/", () => "Hello World!");
-userApi.MapPost("/register", (RegisterUserRequest registerRequest) =>
+var api = app.MapGroup("/");
+api.MapGet("/", () => "Hello World!");
+api.MapPost("/register", (RegisterUserRequest registerRequest) =>
 {
     var username = registerRequest.Name; 
-    var findResponse = client.Find(new UserRequest { Name = username });
+    var findResponse = userClient.Find(new UserRequest { Name = username });
     if (findResponse.UserExists)
     {
         return Results.BadRequest("User already exists");
     }
-    var createResponse = client.Create(new UserRequest { Name = username });
-    if (createResponse.Success)
-    {
-        return Results.Ok("User registered");
-    }
-    return Results.BadRequest("Could not register user");
+    var createResponse = userClient.Create(new UserRequest { Name = username });
+    return createResponse.Success ? Results.Ok("User registered") : Results.BadRequest("Could not register user");
+});
+
+api.MapPost("/message", (UserMessageRequest message) =>
+{
+    var content = message.Content;
+    messagingClient.Send(new UserMessage() { Content = content });
+    return Results.Ok(); 
 });
 
 app.Run();
 
 [JsonSerializable(typeof(RegisterUserRequest))]
+[JsonSerializable(typeof(UserMessageRequest))]
 internal partial class AppJsonSerializerContext : JsonSerializerContext
 {
 }

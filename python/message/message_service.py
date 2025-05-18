@@ -31,7 +31,7 @@ def serve():
 
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     message_pb2_grpc.add_MessagingServicer_to_server(MessageService(pubsub_client), server)
-    server.add_insecure_port('[::]:50051')
+    server.add_insecure_port('[::]:50052')
     server.start()
     server.wait_for_termination()
 
