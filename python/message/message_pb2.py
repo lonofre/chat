@@ -25,7 +25,7 @@ _sym_db = _symbol_database.Default()
 from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\rmessage.proto\x1a\x1bgoogle/protobuf/empty.proto\"\x1e\n\x0bUserMessage\x12\x0f\n\x07\x63ontent\x18\x01 \x01(\t29\n\tMessaging\x12,\n\x04Send\x12\x0c.UserMessage\x1a\x16.google.protobuf.Emptyb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\rmessage.proto\x1a\x1bgoogle/protobuf/empty.proto\",\n\x0bUserMessage\x12\x0f\n\x07\x63ontent\x18\x01 \x01(\t\x12\x0c\n\x04user\x18\x02 \x01(\t29\n\tMessaging\x12,\n\x04Send\x12\x0c.UserMessage\x1a\x16.google.protobuf.Emptyb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -33,7 +33,7 @@ _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'message_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
   DESCRIPTOR._loaded_options = None
   _globals['_USERMESSAGE']._serialized_start=46
-  _globals['_USERMESSAGE']._serialized_end=76
-  _globals['_MESSAGING']._serialized_start=78
-  _globals['_MESSAGING']._serialized_end=135
+  _globals['_USERMESSAGE']._serialized_end=90
+  _globals['_MESSAGING']._serialized_start=92
+  _globals['_MESSAGING']._serialized_end=149
 # @@protoc_insertion_point(module_scope)

@@ -9,6 +9,9 @@ from google.protobuf import empty_pb2
 from azure.messaging.webpubsubservice import WebPubSubServiceClient
 
 class MessageService(message_pb2_grpc.MessagingServicer):
+    """A service that handles messages that users send. Its job
+    is to distribuite the message to all users that are subscribed to
+    the chat hub."""
 
     def __init__(self, pubsub : WebPubSubServiceClient):
         self.pubsub = pubsub
@@ -16,8 +19,12 @@ class MessageService(message_pb2_grpc.MessagingServicer):
     def Send(self, request, unused_context):
         """It distributes the message to all users"""
         message = request.content
-        logging.info(f"Message received: {message}")
-        self.pubsub.send_to_all(message, content_type="text/plain")
+        user = request.user
+        logging.info(f"Message received: {message} from {user}")
+        self.pubsub.send_to_all({
+            "from": user,
+            "content": message,
+        })
 
         # This is the way the service returns nothing,
         # as message.proto describes

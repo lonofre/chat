@@ -46,7 +46,7 @@ class MessagingServicer(object):
     """Missing associated documentation comment in .proto file."""
 
     def Send(self, request, context):
-        """google.protobuf.Empty is an empty response
+        """Sends the message to all users. This function doesn't return anything.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')

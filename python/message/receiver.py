@@ -13,7 +13,9 @@ async def connect(url):
 
 if __name__ == '__main__':
     # This is the example from Microsoft portal with
-    # some tweaks
+    # some tweaks. This script just receives message.
+    # Therefore, it only tests whether the service
+    # sends the messages correctly through PubSub or not.
 
     load_dotenv()
     connection_string = os.environ.get("CONNECTION_STRING")
