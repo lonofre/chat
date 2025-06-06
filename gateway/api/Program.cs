@@ -2,12 +2,25 @@ using System.Text.Json.Serialization;
 using api.Models;
 using Grpc.Net.Client;
 
+var  MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Logging.AddConsole();
 builder.Services.ConfigureHttpJsonOptions(options =>
 {
     options.SerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default);
+});
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+        policy  =>
+        {
+            policy.WithOrigins("http://localhost:5173/")
+                .AllowAnyMethod()
+                .AllowAnyHeader();
+        });
 });
 
 var app = builder.Build();
@@ -21,6 +34,9 @@ var messagingChannel = GrpcChannel.ForAddress("http://localhost:50052");
 var messagingClient = new Messaging.MessagingClient(messagingChannel);
 
 var api = app.MapGroup("/");
+
+app.UseCors(MyAllowSpecificOrigins);
+
 api.MapGet("/", () => "Hello World!");
 api.MapPost("/register", (RegisterUserRequest registerRequest) =>
 {
