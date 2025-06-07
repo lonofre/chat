@@ -8,3 +8,8 @@ For testing, you should follow this order:
 
    - `[FROM]` is the person/entity who is sending the message.
    - `[MESSAGE]` is the message's content.
+
+
+You should use these environment variables:
+- `CONNECTION_STRING`: Azure connection string for PubSub.
+- `HUB`: PubSub hub.
