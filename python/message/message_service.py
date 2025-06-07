@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 
 import grpc
 import message_pb2_grpc
+import message_pb2
 from google.protobuf import empty_pb2
 from azure.messaging.webpubsubservice import WebPubSubServiceClient
 
@@ -29,6 +30,11 @@ class MessageService(message_pb2_grpc.MessagingServicer):
         # This is the way the service returns nothing,
         # as message.proto describes
         return empty_pb2.Empty()
+
+    def GetConnectionUrl(self, request, unused_context):
+        response = self.pubsub.get_client_access_token()
+        url = response["url"]
+        return message_pb2.UrlResponse(url=url)
 
 def serve():
     load_dotenv()

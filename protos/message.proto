@@ -4,10 +4,17 @@ import "google/protobuf/empty.proto";
 service Messaging {
   // Sends the message to all users. This function doesn't return anything.
   rpc Send(UserMessage) returns (google.protobuf.Empty);
+
+  // Ask for the connection url to receive messages.
+  rpc GetConnectionUrl(google.protobuf.Empty) returns (UrlResponse) {}
 }
 
 message UserMessage {
   string content = 1;
   // The user who sent the message
   string user = 2;
+}
+
+message UrlResponse {
+  string url = 1;
 }

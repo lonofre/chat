@@ -40,6 +40,11 @@ class MessagingStub(object):
                 request_serializer=message__pb2.UserMessage.SerializeToString,
                 response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                 _registered_method=True)
+        self.GetConnectionUrl = channel.unary_unary(
+                '/Messaging/GetConnectionUrl',
+                request_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+                response_deserializer=message__pb2.UrlResponse.FromString,
+                _registered_method=True)
 
 
 class MessagingServicer(object):
@@ -52,6 +57,13 @@ class MessagingServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GetConnectionUrl(self, request, context):
+        """Ask for the connection url to receive messages.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_MessagingServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -59,6 +71,11 @@ def add_MessagingServicer_to_server(servicer, server):
                     servicer.Send,
                     request_deserializer=message__pb2.UserMessage.FromString,
                     response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+            ),
+            'GetConnectionUrl': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetConnectionUrl,
+                    request_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+                    response_serializer=message__pb2.UrlResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -88,6 +105,33 @@ class Messaging(object):
             '/Messaging/Send',
             message__pb2.UserMessage.SerializeToString,
             google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetConnectionUrl(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/Messaging/GetConnectionUrl',
+            google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+            message__pb2.UrlResponse.FromString,
             options,
             channel_credentials,
             insecure,
