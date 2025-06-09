@@ -1,8 +1,9 @@
 using System.Text.Json.Serialization;
 using api.Models;
+using Google.Protobuf.WellKnownTypes;
 using Grpc.Net.Client;
 
-var  MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+var  myAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
@@ -14,9 +15,10 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name: MyAllowSpecificOrigins,
+    options.AddPolicy(name: myAllowSpecificOrigins,
         policy  =>
         {
+            // Frontend address
             policy.WithOrigins("http://localhost:5173/")
                 .AllowAnyMethod()
                 .AllowAnyHeader();
@@ -35,7 +37,9 @@ var messagingClient = new Messaging.MessagingClient(messagingChannel);
 
 var api = app.MapGroup("/");
 
-app.UseCors(MyAllowSpecificOrigins);
+// The documentation says you must follow an order for
+// adding middlewares, like CORS
+app.UseCors(myAllowSpecificOrigins);
 
 api.MapGet("/", () => "Hello World!");
 api.MapPost("/register", (RegisterUserRequest registerRequest) =>
@@ -53,14 +57,29 @@ api.MapPost("/register", (RegisterUserRequest registerRequest) =>
 api.MapPost("/message", (UserMessageRequest message) =>
 {
     var content = message.Content;
-    messagingClient.Send(new UserMessage() { Content = content });
+    var username = message.From;
+    messagingClient.Send(new UserMessage() { Content = content, User = username });
     return Results.Ok(); 
+});
+
+api.MapPost("/negotiate", async (NegotiationRequest negotiation) =>
+{
+    var username = negotiation.Name;
+    var findResponse = userClient.Find(new UserRequest { Name = username });
+    if (findResponse.UserExists)
+    {
+        var response = await messagingClient.GetConnectionUrlAsync(new Empty());
+        return Results.Ok(response);
+    }
+    return Results.BadRequest("User not found");
 });
 
 app.Run();
 
 [JsonSerializable(typeof(RegisterUserRequest))]
 [JsonSerializable(typeof(UserMessageRequest))]
+[JsonSerializable(typeof(UrlResponse))]
+[JsonSerializable(typeof(NegotiationRequest))]
 internal partial class AppJsonSerializerContext : JsonSerializerContext
 {
 }

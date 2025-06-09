@@ -1,2 +1,24 @@
-@api_HostAddress = http://localhost:5163
+###
+POST http://localhost:5163/register
+Content-Type: application/json
 
+{
+  "name": "McQueen"
+}
+
+### 
+POST http://localhost:5163/message
+Content-Type: application/json
+
+{
+  "content": "This a test message",
+  "from": "McQueen"
+}
+
+###
+POST http://localhost:5163/negotiate
+Content-Type: application/json
+
+{
+  "name": "McQueen"
+}
