@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { user } from '$lib/store';
 
 	let username = "";
 	async function login() {
@@ -12,10 +13,10 @@
 			body: JSON.stringify({name: username})
 		})
 		if (response.ok){
-			await goto("/chat")
+			user.set(username);
+			await goto("/chat");
 		}
 	}
-
 </script>
 
 <div class="flex min-h-screen items-center justify-center bg-gray-100">

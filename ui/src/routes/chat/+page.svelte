@@ -1,9 +1,49 @@
-<script>
-	let messages = [
-		{ sender: "Bot", text: "Hello! How can I help you?" }
-	];
-	let newMessage = "";
+<script lang="ts">
+	import { onMount } from 'svelte';
+	import { user } from '$lib/store.js';
 
+	let socket;
+	let messages = $state<{sender: string; text: string}[]>([])
+	let newMessage = $state("");
+
+	onMount(async () => {
+
+		const url = await requestConnectionUrl($user);
+		socket = new WebSocket(url);
+
+		socket.addEventListener("message", event => {
+			// Event is an object that contains more information
+			// but the service sends data as json object but in plain text
+			const data = JSON.parse(event.data);
+			messages.push({
+				sender: data.from,
+				text: data.content
+			});
+		})
+	});
+
+	/**
+	 * Request the WebSocket connection url
+	 * @param username the username that will be assoacited to the url
+	 */
+	async function requestConnectionUrl(username: string) {
+		const response = await fetch("http://localhost:5163/negotiate", {
+			method: "POST",
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({name: username})
+		});
+		const data = await response.json();
+		return data.url;
+
+	}
+
+	/**
+	 * Sends a message to all users connected through the
+	 * WebSocket.
+	 */
 	async function sendMessage() {
 		if (newMessage.trim() === "") return;
 
@@ -13,9 +53,8 @@
 				'Accept': 'application/json',
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify({content: newMessage})
-		})
-
+			body: JSON.stringify({content: newMessage, from: $user})
+		});
 		newMessage = "";
 	}
 </script>
@@ -31,8 +70,8 @@
 					<span class="text-sm text-gray-500">{sender}</span>
 					<div
 						class="p-2 rounded-lg max-w-xs"
-						class:bg-blue-100={sender === "You"}
-						class:bg-gray-100={sender !== "You"}
+						class:bg-blue-100={sender === $user}
+						class:bg-gray-100={sender !== $user}
 					>
 						{text}
 					</div>

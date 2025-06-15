@@ -19,7 +19,9 @@ builder.Services.AddCors(options =>
         policy  =>
         {
             // Frontend address
-            policy.WithOrigins("http://localhost:5173/")
+            // Just to point out, somethin like: http://localhost:5173/ will trigger
+            // a CORS error. So, delete the slash at the end
+            policy.WithOrigins("http://localhost:5173")
                 .AllowAnyMethod()
                 .AllowAnyHeader();
         });
