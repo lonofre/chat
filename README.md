@@ -43,12 +43,3 @@ You need to use this environment variables too:
 
 For more information, you can check out [the other README.](./python/message/README.md)
 
-## Additional information
-Commands that helped with development.
-
-### Python gRPC commands
-
-Create gRPC python files for user proto:
-```shell
-python3 -m  grpc_tools.protoc -I protos --python_out=./user --grpc_python_out=./user protos/user.proto
-```
