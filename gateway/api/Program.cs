@@ -19,7 +19,7 @@ builder.Services.AddCors(options =>
         policy  =>
         {
             // Frontend address
-            // Just to point out, somethin like: http://localhost:5173/ will trigger
+            // Just to point out, something like: http://localhost:5173/ will trigger
             // a CORS error. So, delete the slash at the end
             policy.WithOrigins("http://localhost:5173")
                 .AllowAnyMethod()
@@ -44,19 +44,23 @@ var api = app.MapGroup("/");
 app.UseCors(myAllowSpecificOrigins);
 
 api.MapGet("/", () => "Hello World!");
-api.MapPost("/register", (RegisterUserRequest registerRequest) =>
+
+// Registers a new user in the system. It is intended to run once per user creation.
+api.MapPost("/register", (ChatUser registerRequest) =>
 {
     var username = registerRequest.Name; 
-    var findResponse = userClient.Find(new UserRequest { Name = username });
+    var password = registerRequest.Password;
+    var findResponse = userClient.Find(new UserExistsRequest { Name = username });
     if (findResponse.UserExists)
     {
         return Results.BadRequest("User already exists");
     }
-    var createResponse = userClient.Create(new UserRequest { Name = username });
+    var createResponse = userClient.Create(new UserRequest { Name = username, Password = password});
     return createResponse.Success ? Results.Ok("User registered") : Results.BadRequest("Could not register user");
 });
 
-api.MapPost("/message", (UserMessageRequest message) =>
+// Send a message to the chat.
+api.MapPost("/message", (Message message) =>
 {
     var content = message.Content;
     var username = message.From;
@@ -64,22 +68,31 @@ api.MapPost("/message", (UserMessageRequest message) =>
     return Results.Ok(); 
 });
 
-api.MapPost("/negotiate", async (NegotiationRequest negotiation) =>
+// Login and returns additional information if the login was successful
+api.MapPost("/login", (ChatUser user) =>
 {
-    var username = negotiation.Name;
-    var findResponse = userClient.Find(new UserRequest { Name = username });
-    if (findResponse.UserExists)
+    var username = user.Name;
+    var password = user.Password;
+    
+    var response = userClient.ValidateCredentials(new UserRequest{ Name = username, Password = password });
+
+    if (!response.Success)
     {
-        var response = await messagingClient.GetConnectionUrlAsync(new Empty());
-        return Results.Ok(response);
+        return Results.BadRequest("Invalid credentials");
     }
-    return Results.BadRequest("User not found");
+    
+    // After a successful login, the app can return additional info to the user.
+    var connectionData = messagingClient.GetConnectionUrl(new Empty());
+    var loginDetails = new LoginDetails(){url = connectionData.Url};
+    
+    return Results.Ok(loginDetails);
+    
 });
 
 app.Run();
 
-[JsonSerializable(typeof(RegisterUserRequest))]
-[JsonSerializable(typeof(UserMessageRequest))]
+[JsonSerializable(typeof(ChatUser))]
+[JsonSerializable(typeof(Message))]
 [JsonSerializable(typeof(UrlResponse))]
 [JsonSerializable(typeof(NegotiationRequest))]
 internal partial class AppJsonSerializerContext : JsonSerializerContext
