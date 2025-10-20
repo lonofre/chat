@@ -22,21 +22,26 @@ _runtime_version.ValidateProtobufRuntimeVersion(
 _sym_db = _symbol_database.Default()
 
 
+from google.protobuf import struct_pb2 as google_dot_protobuf_dot_struct__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\nuser.proto\"\x1b\n\x0bUserRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\" \n\tUserReply\x12\x13\n\x0buser_exists\x18\x01 \x01(\x08\"\x1e\n\x0b\x43reateReply\x12\x0f\n\x07success\x18\x01 \x01(\x08\x32R\n\x04User\x12\"\n\x04\x46ind\x12\x0c.UserRequest\x1a\n.UserReply\"\x00\x12&\n\x06\x43reate\x12\x0c.UserRequest\x1a\x0c.CreateReply\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\nuser.proto\x1a\x1cgoogle/protobuf/struct.proto\"-\n\x0bUserRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\"!\n\x11UserExistsRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\" \n\tUserReply\x12\x13\n\x0buser_exists\x18\x01 \x01(\x08\"\x1e\n\x0b\x43reateReply\x12\x0f\n\x07success\x18\x01 \x01(\x08\"S\n\x15ValidCredentialsReply\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12)\n\x08metadata\x18\x02 \x01(\x0b\x32\x17.google.protobuf.Struct2\x97\x01\n\x04User\x12(\n\x04\x46ind\x12\x12.UserExistsRequest\x1a\n.UserReply\"\x00\x12&\n\x06\x43reate\x12\x0c.UserRequest\x1a\x0c.CreateReply\"\x00\x12=\n\x13ValidateCredentials\x12\x0c.UserRequest\x1a\x16.ValidCredentialsReply\"\x00\x62\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'user_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
   DESCRIPTOR._loaded_options = None
-  _globals['_USERREQUEST']._serialized_start=14
-  _globals['_USERREQUEST']._serialized_end=41
-  _globals['_USERREPLY']._serialized_start=43
-  _globals['_USERREPLY']._serialized_end=75
-  _globals['_CREATEREPLY']._serialized_start=77
-  _globals['_CREATEREPLY']._serialized_end=107
-  _globals['_USER']._serialized_start=109
-  _globals['_USER']._serialized_end=191
+  _globals['_USERREQUEST']._serialized_start=44
+  _globals['_USERREQUEST']._serialized_end=89
+  _globals['_USEREXISTSREQUEST']._serialized_start=91
+  _globals['_USEREXISTSREQUEST']._serialized_end=124
+  _globals['_USERREPLY']._serialized_start=126
+  _globals['_USERREPLY']._serialized_end=158
+  _globals['_CREATEREPLY']._serialized_start=160
+  _globals['_CREATEREPLY']._serialized_end=190
+  _globals['_VALIDCREDENTIALSREPLY']._serialized_start=192
+  _globals['_VALIDCREDENTIALSREPLY']._serialized_end=275
+  _globals['_USER']._serialized_start=278
+  _globals['_USER']._serialized_end=429
 # @@protoc_insertion_point(module_scope)

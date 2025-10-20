@@ -36,7 +36,7 @@ class UserStub(object):
         """
         self.Find = channel.unary_unary(
                 '/User/Find',
-                request_serializer=user__pb2.UserRequest.SerializeToString,
+                request_serializer=user__pb2.UserExistsRequest.SerializeToString,
                 response_deserializer=user__pb2.UserReply.FromString,
                 _registered_method=True)
         self.Create = channel.unary_unary(
@@ -44,19 +44,33 @@ class UserStub(object):
                 request_serializer=user__pb2.UserRequest.SerializeToString,
                 response_deserializer=user__pb2.CreateReply.FromString,
                 _registered_method=True)
+        self.ValidateCredentials = channel.unary_unary(
+                '/User/ValidateCredentials',
+                request_serializer=user__pb2.UserRequest.SerializeToString,
+                response_deserializer=user__pb2.ValidCredentialsReply.FromString,
+                _registered_method=True)
 
 
 class UserServicer(object):
     """Missing associated documentation comment in .proto file."""
 
     def Find(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Tells whether an user exists.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def Create(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Creates a new user.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ValidateCredentials(self, request, context):
+        """Checks whether the credentials for an user are correct.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -66,13 +80,18 @@ def add_UserServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'Find': grpc.unary_unary_rpc_method_handler(
                     servicer.Find,
-                    request_deserializer=user__pb2.UserRequest.FromString,
+                    request_deserializer=user__pb2.UserExistsRequest.FromString,
                     response_serializer=user__pb2.UserReply.SerializeToString,
             ),
             'Create': grpc.unary_unary_rpc_method_handler(
                     servicer.Create,
                     request_deserializer=user__pb2.UserRequest.FromString,
                     response_serializer=user__pb2.CreateReply.SerializeToString,
+            ),
+            'ValidateCredentials': grpc.unary_unary_rpc_method_handler(
+                    servicer.ValidateCredentials,
+                    request_deserializer=user__pb2.UserRequest.FromString,
+                    response_serializer=user__pb2.ValidCredentialsReply.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -100,7 +119,7 @@ class User(object):
             request,
             target,
             '/User/Find',
-            user__pb2.UserRequest.SerializeToString,
+            user__pb2.UserExistsRequest.SerializeToString,
             user__pb2.UserReply.FromString,
             options,
             channel_credentials,
@@ -129,6 +148,33 @@ class User(object):
             '/User/Create',
             user__pb2.UserRequest.SerializeToString,
             user__pb2.CreateReply.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ValidateCredentials(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/User/ValidateCredentials',
+            user__pb2.UserRequest.SerializeToString,
+            user__pb2.ValidCredentialsReply.FromString,
             options,
             channel_credentials,
             insecure,

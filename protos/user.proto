@@ -1,18 +1,39 @@
 syntax = "proto3";
+import "google/protobuf/struct.proto";
 
 service User {
-  rpc Find (UserRequest) returns (UserReply) {}
+
+  // Tells whether an user exists.
+  rpc Find (UserExistsRequest) returns (UserReply) {}
+
+  // Creates a new user.
   rpc Create (UserRequest) returns (CreateReply) {}
+
+  // Checks whether the credentials for an user are correct.
+  rpc ValidateCredentials(UserRequest) returns (ValidCredentialsReply) {}
 }
 
 message UserRequest {
   string name = 1;
+  string password = 2;
+}
+
+message UserExistsRequest {
+  string name = 1;
 }
 
 message UserReply {
+  // Boolean that tells whether an user exists.
   bool user_exists = 1;
 }
 
 message CreateReply {
+  // Boolean that tells whether the user creation was successful.
   bool success = 1;
+}
+
+message ValidCredentialsReply {
+  bool success = 1;
+  // Extra data when the credentials are valid.
+  google.protobuf.Struct metadata = 2;
 }
