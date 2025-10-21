@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using api.Models;
+using api.utils;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Net.Client;
 
@@ -83,7 +84,16 @@ api.MapPost("/login", (ChatUser user) =>
     
     // After a successful login, the app can return additional info to the user.
     var connectionData = messagingClient.GetConnectionUrl(new Empty());
-    var loginDetails = new LoginDetails(){url = connectionData.Url};
+    var metadata = response.Metadata.ToDictionary();
+    var token= metadata["token"] as string;
+    var id = metadata["id"] as string;
+    var communicationDetails = new CommunicationDetails()
+    {
+        Id = id,
+        Token = token
+    };
+    
+    var loginDetails = new LoginDetails(){Url = connectionData.Url, Communication = communicationDetails};
     
     return Results.Ok(loginDetails);
     
