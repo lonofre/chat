@@ -34,6 +34,8 @@ def run(option: str, args):
                 logging.info("Invalid credentials")
             else:
                 logging.info("Valid credentials")
+                metadata = dict(reply.metadata)
+                logging.info(metadata)
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
