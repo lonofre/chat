@@ -85,8 +85,8 @@ api.MapPost("/login", (ChatUser user) =>
     // After a successful login, the app can return additional info to the user.
     var connectionData = messagingClient.GetConnectionUrl(new Empty());
     var metadata = response.Metadata.ToDictionary();
-    var token= metadata["token"] as string;
-    var id = metadata["id"] as string;
+    var token= metadata["communication_token"] as string;
+    var id = metadata["communication_id"] as string;
     var communicationDetails = new CommunicationDetails()
     {
         Id = id,

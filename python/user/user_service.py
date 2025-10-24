@@ -67,11 +67,17 @@ class UserService(user_pb2_grpc.UserServicer):
 
         # Majority of this code comes from
         # https://learn.microsoft.com/en-us/azure/communication-services/quickstarts/identity/access-tokens
-        identity_token_result = self.client.create_user_and_token(["voip"])
+        # We're using two services:
+        # - voip = Voice over Internet Protocol -> audio and video
+        # - chat = chat messages
+        identity_token_result = self.client.create_user_and_token(["voip", "chat"])
         identity = identity_token_result[0]
         token = identity_token_result[1].token
         id = identity.properties['id']
-        metadata = {"token": token, "id": id}
+        metadata = {
+            "communication_token": token,
+            "communication_id": id
+        }
 
         # As we define in the proto file, we should send a Struct,
         # we can't send a python dict
