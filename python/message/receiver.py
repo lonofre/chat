@@ -1,7 +1,11 @@
 import asyncio
 import os
 import websockets
+import sys
 from dotenv import load_dotenv
+import grpc
+import message_pb2
+import message_pb2_grpc
 
 from azure.messaging.webpubsubservice import WebPubSubServiceClient
 
@@ -16,15 +20,13 @@ if __name__ == '__main__':
     # some tweaks. This script just receives message.
     # Therefore, it only tests whether the service
     # sends the messages correctly through PubSub or not.
+    user = sys.argv[1]
 
-    load_dotenv()
-    connection_string = os.environ.get("CONNECTION_STRING")
-    hub_name = os.environ.get("HUB")
+    with grpc.insecure_channel('localhost:50052') as channel:
+        stub = message_pb2_grpc.MessagingStub(channel)
+        response = stub.GetConnectionUrl(message_pb2.Negotiation(id=user))
 
-    service = WebPubSubServiceClient.from_connection_string(connection_string, hub=hub_name)
-    token = service.get_client_access_token()
-
-    try:
-        asyncio.get_event_loop().run_until_complete(connect(token['url']))
-    except KeyboardInterrupt:
-        pass
+        try:
+            asyncio.get_event_loop().run_until_complete(connect(response.url))
+        except KeyboardInterrupt:
+            pass

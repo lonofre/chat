@@ -6,13 +6,31 @@ service Messaging {
   rpc Send(UserMessage) returns (google.protobuf.Empty);
 
   // Ask for the connection url to receive messages.
-  rpc GetConnectionUrl(google.protobuf.Empty) returns (UrlResponse) {}
+  rpc GetConnectionUrl(Negotiation) returns (UrlResponse) {}
+
+  // Add an user to a group so this user can start receiving messages from that group.
+  rpc AddUserToGroup(AddToGroupMessage) returns (google.protobuf.Empty) {}
+}
+
+message AddToGroupMessage{
+  // User that is going to be added in a group.
+  string user = 1;
+  // Target group.
+  string group = 2;
 }
 
 message UserMessage {
+  // Content of the message.
   string content = 1;
   // The user who sent the message
   string user = 2;
+  // The group the user sends the message to.
+  string group = 3;
+}
+
+message Negotiation {
+  // User id
+  string id = 1;
 }
 
 message UrlResponse {

@@ -14,27 +14,43 @@ class MessageService(message_pb2_grpc.MessagingServicer):
     is to distribuite the message to all users that are subscribed to
     the chat hub."""
 
-    def __init__(self, pubsub : WebPubSubServiceClient):
-        self.pubsub = pubsub
+    def __init__(self, pubsub_service : WebPubSubServiceClient):
+        self.pubsub_service = pubsub_service
 
     def Send(self, request, unused_context):
-        """It distributes the message to all users"""
-        message = request.content
+        content = request.content
         user = request.user
-        logging.info(f"Message received: {message} from {user}")
-        self.pubsub.send_to_all({
+        group = request.group
+        logging.info(f"Message received: {content} from {user}, group: {group}")
+
+        message = {
             "from": user,
-            "content": message,
-        })
+            "content": content,
+            "group": group,
+        }
+
+        if group == "all":
+            self.pubsub_service.send_to_all(message)
+        else:
+            self.pubsub_service.send_to_group(group, message)
 
         # This is the way the service returns nothing,
         # as message.proto describes
         return empty_pb2.Empty()
 
     def GetConnectionUrl(self, request, unused_context):
-        response = self.pubsub.get_client_access_token()
+        id = request.id
+        response = self.pubsub_service.get_client_access_token(user_id=id)
         url = response["url"]
+        logging.info(f"Sending connection url for: {id}")
         return message_pb2.UrlResponse(url=url)
+
+    def AddUserToGroup(self, request, unused_context):
+        user = request.user
+        group = request.group
+        self.pubsub_service.add_user_to_group(group, user)
+        logging.info(f"Added user {user} to group {group}")
+        return empty_pb2.Empty()
 
 def serve():
     load_dotenv()

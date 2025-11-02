@@ -25,17 +25,21 @@ _sym_db = _symbol_database.Default()
 from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\rmessage.proto\x1a\x1bgoogle/protobuf/empty.proto\",\n\x0bUserMessage\x12\x0f\n\x07\x63ontent\x18\x01 \x01(\t\x12\x0c\n\x04user\x18\x02 \x01(\t\"\x1a\n\x0bUrlResponse\x12\x0b\n\x03url\x18\x01 \x01(\t2u\n\tMessaging\x12,\n\x04Send\x12\x0c.UserMessage\x1a\x16.google.protobuf.Empty\x12:\n\x10GetConnectionUrl\x12\x16.google.protobuf.Empty\x1a\x0c.UrlResponse\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\rmessage.proto\x1a\x1bgoogle/protobuf/empty.proto\"0\n\x11\x41\x64\x64ToGroupMessage\x12\x0c\n\x04user\x18\x01 \x01(\t\x12\r\n\x05group\x18\x02 \x01(\t\";\n\x0bUserMessage\x12\x0f\n\x07\x63ontent\x18\x01 \x01(\t\x12\x0c\n\x04user\x18\x02 \x01(\t\x12\r\n\x05group\x18\x03 \x01(\t\"\x19\n\x0bNegotiation\x12\n\n\x02id\x18\x01 \x01(\t\"\x1a\n\x0bUrlResponse\x12\x0b\n\x03url\x18\x01 \x01(\t2\xab\x01\n\tMessaging\x12,\n\x04Send\x12\x0c.UserMessage\x1a\x16.google.protobuf.Empty\x12\x30\n\x10GetConnectionUrl\x12\x0c.Negotiation\x1a\x0c.UrlResponse\"\x00\x12>\n\x0e\x41\x64\x64UserToGroup\x12\x12.AddToGroupMessage\x1a\x16.google.protobuf.Empty\"\x00\x62\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'message_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
   DESCRIPTOR._loaded_options = None
-  _globals['_USERMESSAGE']._serialized_start=46
-  _globals['_USERMESSAGE']._serialized_end=90
-  _globals['_URLRESPONSE']._serialized_start=92
-  _globals['_URLRESPONSE']._serialized_end=118
-  _globals['_MESSAGING']._serialized_start=120
-  _globals['_MESSAGING']._serialized_end=237
+  _globals['_ADDTOGROUPMESSAGE']._serialized_start=46
+  _globals['_ADDTOGROUPMESSAGE']._serialized_end=94
+  _globals['_USERMESSAGE']._serialized_start=96
+  _globals['_USERMESSAGE']._serialized_end=155
+  _globals['_NEGOTIATION']._serialized_start=157
+  _globals['_NEGOTIATION']._serialized_end=182
+  _globals['_URLRESPONSE']._serialized_start=184
+  _globals['_URLRESPONSE']._serialized_end=210
+  _globals['_MESSAGING']._serialized_start=213
+  _globals['_MESSAGING']._serialized_end=384
 # @@protoc_insertion_point(module_scope)
