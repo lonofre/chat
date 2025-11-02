@@ -65,7 +65,17 @@ api.MapPost("/message", (Message message) =>
 {
     var content = message.Content;
     var username = message.From;
-    messagingClient.Send(new UserMessage() { Content = content, User = username });
+    var group = message.Group;
+    messagingClient.Send(new UserMessage() { Content = content, User = username, Group = group});
+    return Results.Ok(); 
+});
+
+// Registers a user in a group.
+api.MapPost("/group", (GroupDetails details) =>
+{
+    var username = details.User;
+    var group = details.Group;
+    messagingClient.AddUserToGroup(new AddToGroupMessage { User = username, Group = group });
     return Results.Ok(); 
 });
 
@@ -83,7 +93,7 @@ api.MapPost("/login", (ChatUser user) =>
     }
     
     // After a successful login, the app can return additional info to the user.
-    var connectionData = messagingClient.GetConnectionUrl(new Empty());
+    var connectionData = messagingClient.GetConnectionUrl(new Negotiation{Id = username});
     var metadata = response.Metadata.ToDictionary();
     var token= metadata["token"] as string;
     var id = metadata["id"] as string;
@@ -105,6 +115,8 @@ app.Run();
 [JsonSerializable(typeof(Message))]
 [JsonSerializable(typeof(UrlResponse))]
 [JsonSerializable(typeof(NegotiationRequest))]
+[JsonSerializable(typeof(LoginDetails))]
+[JsonSerializable(typeof(GroupDetails))]
 internal partial class AppJsonSerializerContext : JsonSerializerContext
 {
 }

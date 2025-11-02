@@ -13,7 +13,8 @@ Content-Type: application/json
 
 {
   "content": "This a test message",
-  "from": "McQueen"
+  "from": "McQueen",
+  "group": "all"
 }
 
 ###
@@ -23,4 +24,23 @@ Content-Type: application/json
 {
   "name": "McQueen",
   "password": "12345"
+}
+
+###
+POST http://localhost:5163/group
+Content-Type: application/json
+
+{
+  "user": "McQueen",
+  "group": "MVP"
+}
+
+### 
+POST http://localhost:5163/message
+Content-Type: application/json
+
+{
+  "content": "This a another test message",
+  "from": "McQueen",
+  "group": "MVP"
 }

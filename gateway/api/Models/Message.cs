@@ -4,4 +4,5 @@ public class Message
 {
     public required string Content { get; init; } = string.Empty;
     public required string From { get; init; } = string.Empty;
+    public required string Group { get; init; } = string.Empty;
 }
