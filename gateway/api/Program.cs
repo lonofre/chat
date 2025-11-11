@@ -4,9 +4,13 @@ using api.utils;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Net.Client;
 
+
+
 var  myAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 var builder = WebApplication.CreateBuilder(args);
+var hostIP = Environment.GetEnvironmentVariable("HOST_IP");
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Logging.AddConsole();
 builder.Services.ConfigureHttpJsonOptions(options =>
@@ -22,7 +26,7 @@ builder.Services.AddCors(options =>
             // Frontend address
             // Just to point out, something like: http://localhost:5173/ will trigger
             // a CORS error. So, delete the slash at the end
-            policy.WithOrigins("http://localhost:5173")
+            policy.AllowAnyOrigin()
                 .AllowAnyMethod()
                 .AllowAnyHeader();
         });
@@ -33,9 +37,12 @@ var app = builder.Build();
 AppContext.SetSwitch(
     "System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
 
-var userChannel = GrpcChannel.ForAddress("http://localhost:50051");
+var userGrpcHost = Environment.GetEnvironmentVariable("USER_GRPC_HOST") ?? "localhost";
+var messageGrpcHost = Environment.GetEnvironmentVariable("MESSAGE_GRPC_HOST") ?? "localhost";
+
+var userChannel = GrpcChannel.ForAddress($"http://{userGrpcHost}:50051");
 var userClient = new User.UserClient(userChannel);
-var messagingChannel = GrpcChannel.ForAddress("http://localhost:50052");
+var messagingChannel = GrpcChannel.ForAddress($"http://{messageGrpcHost}:50052");
 var messagingClient = new Messaging.MessagingClient(messagingChannel);
 
 var api = app.MapGroup("/");
