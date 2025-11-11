@@ -1,14 +1,15 @@
-FROM python:3.13
+FROM python:3.13-slim
 
 ENV PYTHONUNBUFFERED=1 \
+    POETRY_HOME="/opt/poetry" \
     POETRY_VIRTUALENVS_CREATE=false \
-    PATH="/root/.local/bin:$PATH" \
+    PATH="/opt/poetry/bin:$PATH" \
     CONNECTION_STRING="my connection string" \
     HUB="the hub"
 
 WORKDIR /app
 
-# Install Poetry 
+# Install Poetry
 RUN apt-get update && apt-get install -y curl build-essential git \
  && curl -sSL https://install.python-poetry.org | python3 - \
  && rm -rf /var/lib/apt/lists/*
